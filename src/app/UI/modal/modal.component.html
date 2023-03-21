@@ -1,6 +1,9 @@
 <div class="backdrop"></div>
 <div class="modal">
-    <ng-content></ng-content>
+    <img
+        src="{{imgPath}}"
+        alt="User image"
+        class="modal__image">
     <div class="modal__close" (click)="onClose()">
         <img src="assets/plus-sign.png">
     </div>

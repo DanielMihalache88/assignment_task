@@ -1,7 +1,3 @@
-:host ::ng-deep .user__image {
-    width: 100%;
-}
-
 .backdrop {
     position: fixed;
     top: 0;
@@ -20,14 +16,12 @@
     z-index: 100;
     background-color: #000;
     border-radius: 0.5rem;
-    padding: 3rem;
-    min-width: 40vw;
+    padding: 2rem;
+    max-width: 70vw;
     width: 100%;
     max-height: calc(100vh - 10rem);
     height: auto;
-    width: auto;
     display: block;
-    box-shadow: var(--shadow);
 }
 
 .modal__close img {
@@ -39,6 +33,18 @@
     cursor: pointer;
 }
 
-.user__image {
+.modal__image {
     width: 100%;
+}
+
+@media(min-width: 480px) {
+    .modal {
+        max-width: 50vw;
+    }
+}
+
+@media(min-width: 768px) {
+    .modal {
+        max-width: 30vw;
+    }
 }

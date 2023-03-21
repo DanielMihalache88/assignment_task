@@ -1,50 +1,28 @@
 <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
-
-
-<div class="users__controls">
-    <input
-        type="text"
-        #searchInput
-        placeholder="Search user..."
-        class="searchInput">
-    <select
-        #countriesSelect
-        (change)="onChange()"
-        name=" countries"
-        class="countries">
-        <option value="" disabled selected>--Filter by country--</option>
-        <option
-            *ngFor="let country of counties$ | async"
-            value="{{country}}">{{country}}</option>
-    </select>
-</div>
-
 <div *ngIf="!isLoading">
-    <div *ngFor="let user of users$ | async" class="user">
-        <div class="user__details">
-            <div
-                class="user__image"
-                [ngStyle]="{'background-image': 'url('+ user.picture.thumbnail +')'}"
-                (click)="onThumbnailClick(user.picture.large)">
-            </div>
-            <div class="user__info">
-                <div class="user__name">
-                    <mat-icon>account_circle</mat-icon>
-                    <span>{{user.name.first}} {{user.name.last}}</span>
-                </div>
-                <div class="user__email">
-                    <mat-icon>email</mat-icon>
-                    <span>{{user.email}}</span>
-                </div>
-                <div class="user__email">
-                    <mat-icon>location_city</mat-icon>
-                    <span>{{user.location.country}}</span>
-                </div>
-            </div>
-        </div>
-        <div class="user__actions">
-            <div>User details</div>
-            <div>Save user</div>
-        </div>
+    <div class="users-controls">
+        <input
+            type="text"
+            #searchInput
+            placeholder="Search user..."
+            class="users-controls__item users-controls__item--input">
+        <select
+            #countriesSelect
+            (change)="onChange()"
+            class="users-controls__item users-controls__item--select">
+            <option value="" disabled selected>Filter by country</option>
+            <option value="allCountries">All Countries</option>
+            <option
+                *ngFor="let country of countries$ | async"
+                value="{{country}}">
+                {{country}}
+            </option>
+        </select>
     </div>
+
+
+    <app-user-item
+        *ngFor="let user of users$ | async"
+        [userItem]="user">
+    </app-user-item>
 </div>

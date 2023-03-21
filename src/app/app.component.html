@@ -1,7 +1,5 @@
-<app-users (thumbanilClicked)="test(imgPath = $event)"></app-users>
-
+<app-users></app-users>
 <app-modal
-    *ngIf="openModal"
-    (modalClosed)="openModal = false">
-    <img [src]="imgPath" alt="User image" class="user__image">
+    *ngIf="shouldOpenModal$ | async"
+    [imgPath]="imagePath">
 </app-modal>

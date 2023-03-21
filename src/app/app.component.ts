@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ModalService } from './UI/modal/modal.service';
 
 @Component({
     selector: 'app-root',
@@ -6,13 +8,18 @@ import { Component } from '@angular/core';
     styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
+export class AppComponent implements OnInit {
     title = 'assignment_task';
-    imgPath!: string;
-    openModal = false;
+    imagePath!: string;
+    shouldOpenModal$!: Observable<boolean>;
 
-    test($event: string) {
-        console.log($event);
-        this.openModal = true;
+    constructor(private modalService: ModalService) { }
+
+    ngOnInit(): void {
+        this.modalService.modalSubject.subscribe(data => {
+            this.imagePath = data;
+        });
+
+        this.shouldOpenModal$ = this.modalService.openModalSubject;
     }
 }

@@ -1,0 +1,26 @@
+<div class="user-item">
+    <div class="user-item__details align-items-center">
+        <div
+            class="user-item__image"
+            [ngStyle]="{'background-image': 'url('+ userItem.thumbnail +')'}"
+            (click)="onClick(userItem.largeImage)">
+        </div>
+        <div class="user-item__info">
+            <div class="align-items-center">
+                <mat-icon>account_circle</mat-icon>
+                <span>{{userItem.fullName}}</span>
+            </div>
+            <div class="align-items-center">
+                <mat-icon>email</mat-icon>
+                <span>{{userItem.email}}</span>
+            </div>
+            <div class="align-items-center">
+                <mat-icon>location_city</mat-icon>
+                <span>{{userItem.country}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="user-item__details align-items-center">
+        <div>User details</div>
+    </div>
+</div>

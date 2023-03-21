@@ -8,13 +8,15 @@ import { AppComponent } from './app.component';
 import { UsersComponent } from './users/users.component';
 import { LoadingSpinnerComponent } from './UI/loading-spinner/loading-spinner.component';
 import { ModalComponent } from './UI/modal/modal.component';
+import { UserItemComponent } from './users/user-item/user-item.component';
 
 @NgModule({
     declarations: [
         AppComponent,
         UsersComponent,
         LoadingSpinnerComponent,
-        ModalComponent
+        ModalComponent,
+        UserItemComponent
     ],
     imports: [
         BrowserModule,
