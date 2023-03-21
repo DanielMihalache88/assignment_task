@@ -1,0 +1,44 @@
+:host ::ng-deep .user__image {
+    width: 100%;
+}
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, .75);
+    z-index: 50;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    z-index: 100;
+    background-color: #000;
+    border-radius: 0.5rem;
+    padding: 3rem;
+    min-width: 40vw;
+    width: 100%;
+    max-height: calc(100vh - 10rem);
+    height: auto;
+    width: auto;
+    display: block;
+    box-shadow: var(--shadow);
+}
+
+.modal__close img {
+    max-width: 20px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transform: rotate(45deg) !important;
+    cursor: pointer;
+}
+
+.user__image {
+    width: 100%;
+}
