@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Subject } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { UsersStore } from './users.store';
 import { User } from '../user.model';
-
 
 //not sure this is the correct way to build this inteface...
 interface responseType {
@@ -13,7 +12,7 @@ interface responseType {
 
 @Injectable({ providedIn: 'root' })
 export class UsersService {
-    isLoading = new Subject<boolean>();
+    isLoading = new BehaviorSubject<boolean>(false);
     usersEndpoint = 'https://randomuser.me/api/?results=250';
 
     constructor(
@@ -22,6 +21,8 @@ export class UsersService {
     ) { }
 
     public getUsers() {
+        this.isLoading.next(true);
+
         return this.http.get<responseType>(this.usersEndpoint)
             .pipe(
                 map(data => {
@@ -29,13 +30,14 @@ export class UsersService {
 
                     this.usersStore.setUsers(usersData);
                     this.usersStore.setCountries(usersData);
+                    this.isLoading.next(false);
 
                     return usersData;
                 }));
     }
 
     /*
-    I choose to extract only the usesfull info about the user
+    I chose to extract only the usesfull info about the user
     to be able to declare a User interface, to be used later in usersStore.
     If I don`t do this, in userStore, in every function that recieves an user
     or an array of users I end up declaring type of user: any.

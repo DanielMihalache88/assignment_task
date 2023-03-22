@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { ModalService } from './UI/modal/modal.service';
 
 @Component({
@@ -8,18 +8,22 @@ import { ModalService } from './UI/modal/modal.service';
     styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit {
-    title = 'assignment_task';
+export class AppComponent implements OnInit, OnDestroy {
+    imgSub$!: Subscription;
     imagePath!: string;
     shouldOpenModal$!: Observable<boolean>;
 
     constructor(private modalService: ModalService) { }
 
     ngOnInit(): void {
-        this.modalService.modalSubject.subscribe(data => {
-            this.imagePath = data;
+        this.imgSub$ = this.modalService.modalSubject.subscribe((imgPath: string) => {
+            this.imagePath = imgPath;
         });
 
         this.shouldOpenModal$ = this.modalService.openModalSubject;
+    }
+
+    ngOnDestroy(): void {
+        this.imgSub$.unsubscribe();
     }
 }

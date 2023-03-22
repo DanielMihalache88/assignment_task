@@ -5,13 +5,13 @@ import { User } from '../user.model';
 @Injectable({ providedIn: 'root' })
 export class UsersStore {
     private allUsers = new BehaviorSubject<User[]>([]);
-    private filteredByNameSubject = new BehaviorSubject<User[]>([]);
-    private countriesSubject = new BehaviorSubject<string[]>([]);
+    private countries = new BehaviorSubject<string[]>([]);
+    private filteredByName = new BehaviorSubject<User[]>([]);
     private filteredByCountry = new BehaviorSubject<User[]>([]);
 
     allUsers$: Observable<User[]> = this.allUsers.asObservable();
-    filteredUsers$: Observable<User[]> = this.filteredByNameSubject.asObservable();
-    allCountries$: Observable<string[]> = this.countriesSubject.asObservable();
+    allCountries$: Observable<string[]> = this.countries.asObservable();
+    filteredUsersByName$: Observable<User[]> = this.filteredByName.asObservable();
     filteredByCountry$: Observable<User[]> = this.filteredByCountry.asObservable();
 
     setUsers(users: User[]) {
@@ -21,7 +21,8 @@ export class UsersStore {
     handleFilterByName(searchTerm: string, countrySelection: string) {
         const filteredByCountry = this.filteredByCountry.getValue();
 
-        /**if filteredByCountry has items, this means that 
+        /**
+         * if filteredByCountry has items, this means that 
          * the users have already been filtered from the dropdown
         */
 
@@ -36,9 +37,10 @@ export class UsersStore {
     }
 
     handleFilterByCountry(selectedCountry: string, searchInputValue: string) {
-        const filteredByNameResults = this.filteredByNameSubject.getValue();
+        const filteredByNameResults = this.filteredByName.getValue();
 
-        /**if filteredByNameResults has items, this means that 
+        /**
+         * if filteredByNameResults has items, this means that 
          * the users have already been filtered from the searchInput
         */
 
@@ -59,7 +61,7 @@ export class UsersStore {
         const noDuplicatesContries = [...new Set(allCountries)];
         const sortedCountries = noDuplicatesContries.sort((a, b) => a > b ? 1 : -1);
 
-        this.countriesSubject.next(sortedCountries);
+        this.countries.next(sortedCountries);
     }
 
     private filterUsersByName(users: User[], searchTerm: string) {
@@ -67,18 +69,16 @@ export class UsersStore {
             return user.fullName.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1;
         });
 
-        this.filteredByNameSubject.next(filteredByName);
+        this.filteredByName.next(filteredByName);
     }
 
     private filterUsersByCountry(users: User[], selectedCountry: string) {
-
         if (selectedCountry === 'allCountries') {
             this.filteredByCountry.next(users);
             return;
         }
 
         const filteredByCountry = users.filter((user: User) => user.country === selectedCountry);
-
         this.filteredByCountry.next(filteredByCountry);
     }
 }

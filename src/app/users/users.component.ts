@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { debounceTime, distinctUntilChanged, fromEvent, map, Observable, tap } from 'rxjs';
 import { UsersService } from '../data-access/users.service';
 import { UsersStore } from '../data-access/users.store';
+import { User } from '../user.model';
 
 @Component({
     selector: 'app-users',
@@ -10,15 +11,12 @@ import { UsersStore } from '../data-access/users.store';
 })
 
 export class UsersComponent implements OnInit, AfterViewInit {
-    users$!: Observable<any>;
+    users$!: Observable<User[]>;
     countries$!: Observable<string[]>;
-
-    isLoading = false;
+    isLoading$!: Observable<boolean>;
 
     @ViewChild('searchInput') input!: ElementRef;
     @ViewChild('countriesSelect') countriesSelect!: ElementRef;
-
-    @Output() thumbanilClicked = new EventEmitter<string>();
 
     constructor(
         private usersService: UsersService,
@@ -30,6 +28,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     ngOnInit(): void {
         this.users$ = this.usersStore.allUsers$;
         this.countries$ = this.usersStore.allCountries$;
+        this.isLoading$ = this.usersService.isLoading;
     }
 
     ngAfterViewInit(): void {
@@ -49,14 +48,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
                 })
             )
             .subscribe(() => {
-                this.users$ = this.usersStore.filteredUsers$;
+                this.users$ = this.usersStore.filteredUsersByName$;
             });
     }
 
     onChange() {
         const selection = this.countriesSelect.nativeElement.value;
         const searchInputValue = this.input.nativeElement.value;
-
 
         this.usersStore.handleFilterByCountry(selection, searchInputValue);
 

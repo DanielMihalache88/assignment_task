@@ -1,28 +1,25 @@
-<app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
-<div *ngIf="!isLoading">
-    <div class="users-controls">
-        <input
-            type="text"
-            #searchInput
-            placeholder="Search user..."
-            class="users-controls__item users-controls__item--input">
-        <select
-            #countriesSelect
-            (change)="onChange()"
-            class="users-controls__item users-controls__item--select">
-            <option value="" disabled selected>Filter by country</option>
-            <option value="allCountries">All Countries</option>
-            <option
-                *ngFor="let country of countries$ | async"
-                value="{{country}}">
-                {{country}}
-            </option>
-        </select>
-    </div>
-
-
-    <app-user-item
-        *ngFor="let user of users$ | async"
-        [userItem]="user">
-    </app-user-item>
+<app-loading-spinner *ngIf="isLoading$ | async"></app-loading-spinner>
+<div class="users-controls">
+    <input
+        type="text"
+        #searchInput
+        placeholder="Search user..."
+        class="users-controls__item users-controls__item--input">
+    <select
+        #countriesSelect
+        (change)="onChange()"
+        class="users-controls__item users-controls__item--select">
+        <option value="" disabled selected>Filter by country</option>
+        <option value="allCountries">All Countries</option>
+        <option
+            *ngFor="let country of countries$ | async"
+            value="{{country}}">
+            {{country}}
+        </option>
+    </select>
 </div>
+
+<app-user-item
+    *ngFor="let user of users$ | async"
+    [userItem]="user">
+</app-user-item>
