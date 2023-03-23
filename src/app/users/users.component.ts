@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { debounceTime, distinctUntilChanged, fromEvent, map, Observable, tap } from 'rxjs';
+import { combineLatest, debounceTime, distinctUntilChanged, fromEvent, map, Observable, startWith } from 'rxjs';
 import { UsersService } from '../data-access/users.service';
 import { UsersStore } from '../data-access/users.store';
 import { User } from '../user.model';
@@ -27,37 +27,52 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
         this.users$ = this.usersStore.allUsers$;
+
         this.countries$ = this.usersStore.allCountries$;
         this.isLoading$ = this.usersService.isLoading;
     }
 
     ngAfterViewInit(): void {
-        this.handleSearch();
+        this.users$ = this.controlsStream().pipe(map(this.handleUserFiltering));
     }
 
-    handleSearch() {
-        fromEvent<KeyboardEvent>(this.input.nativeElement, 'keyup')
+    controlsStream() {
+        const searchInput$ = fromEvent<KeyboardEvent>(this.input.nativeElement, 'keyup')
             .pipe(
                 map((event: KeyboardEvent) => (event.target as HTMLInputElement).value),
                 debounceTime(400),
-                distinctUntilChanged(),
-                tap(searchTerm => {
-                    const selection = this.countriesSelect.nativeElement.value;
+                distinctUntilChanged()
+            );
 
-                    this.usersStore.handleFilterByName(searchTerm, selection);
-                })
-            )
-            .subscribe(() => {
-                this.users$ = this.usersStore.filteredUsersByName$;
-            });
+        const selectChange$ = fromEvent(this.countriesSelect.nativeElement, 'change')
+            .pipe(
+                map((event: any) => (event.target as HTMLSelectElement).value)
+            );
+
+        const $usersComb = this.usersStore.allUsers$;
+
+        return combineLatest([searchInput$.pipe(startWith('')), selectChange$.pipe(startWith('allCountries')), $usersComb]);
     }
 
-    onChange() {
-        const selection = this.countriesSelect.nativeElement.value;
-        const searchInputValue = this.input.nativeElement.value;
+    handleUserFiltering(data: any) {
+        const [searchTerm, selectedCountry, users] = data;
 
-        this.usersStore.handleFilterByCountry(selection, searchInputValue);
+        //YES filter by name; NO fiter by country
+        if (searchTerm && selectedCountry === 'allCountries') {
+            return users.filter((user: User) => user.fullName.toLowerCase().indexOf(searchTerm) !== -1);
+        }
 
-        this.users$ = this.usersStore.filteredByCountry$;
+        //NO filter by name; YES fiter by country
+        if (!searchTerm && selectedCountry !== 'allCountries') {
+            return users.filter((user: User) => user.country === selectedCountry);
+        }
+
+        //YES filter by name; YES fiter by country
+        if (searchTerm && selectedCountry !== 'allCountries') {
+            return users.filter((user: User) => user.fullName.toLowerCase().indexOf(searchTerm) !== -1 && user.country === selectedCountry);
+        }
+
+        //default: NO filter by name; NO fiter by country
+        return users;
     }
 }
