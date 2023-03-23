@@ -27,6 +27,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
         this.users$ = this.usersStore.allUsers$;
+
         this.countries$ = this.usersStore.allCountries$;
         this.isLoading$ = this.usersService.isLoading;
     }
