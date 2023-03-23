@@ -49,30 +49,30 @@ export class UsersComponent implements OnInit, AfterViewInit {
                 map((event: any) => (event.target as HTMLSelectElement).value)
             );
 
-        const $usersComb = this.usersStore.allUsers$;
+        const $initialUsers = this.usersStore.allUsers$;
 
-        return combineLatest([searchInput$.pipe(startWith('')), selectChange$.pipe(startWith('allCountries')), $usersComb]);
+        return combineLatest([searchInput$.pipe(startWith('')), selectChange$.pipe(startWith('allCountries')), $initialUsers]);
     }
 
     handleUserFiltering(data: any) {
-        const [searchTerm, selectedCountry, users] = data;
+        const [searchTerm, selectedCountry, allUsers] = data;
 
         //YES filter by name; NO fiter by country
         if (searchTerm && selectedCountry === 'allCountries') {
-            return users.filter((user: User) => user.fullName.toLowerCase().indexOf(searchTerm) !== -1);
+            return allUsers.filter((user: User) => user.fullName.toLowerCase().indexOf(searchTerm) !== -1);
         }
 
         //NO filter by name; YES fiter by country
         if (!searchTerm && selectedCountry !== 'allCountries') {
-            return users.filter((user: User) => user.country === selectedCountry);
+            return allUsers.filter((user: User) => user.country === selectedCountry);
         }
 
         //YES filter by name; YES fiter by country
         if (searchTerm && selectedCountry !== 'allCountries') {
-            return users.filter((user: User) => user.fullName.toLowerCase().indexOf(searchTerm) !== -1 && user.country === selectedCountry);
+            return allUsers.filter((user: User) => user.fullName.toLowerCase().indexOf(searchTerm) !== -1 && user.country === selectedCountry);
         }
 
         //default: NO filter by name; NO fiter by country
-        return users;
+        return allUsers;
     }
 }
